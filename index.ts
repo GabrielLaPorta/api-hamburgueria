@@ -1,8 +1,8 @@
 import express from 'express';
-import logging from './config/logging';
-import config from './config/config';
-import userRoutes from './routes/user';
-import { dbCreateConnection } from './database/createConnection';
+import logging from './src/config/logging';
+import config from './src/config/config';
+import userRoutes from './src/routes/user';
+import { dbCreateConnection } from './createConnection';
 
 const NAMESPACE = 'Server';
 const app = express();

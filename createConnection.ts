@@ -1,6 +1,6 @@
 import { Connection, createConnection } from 'typeorm';
 
-import ormConfig from './config/ormConfig';
+import ormConfig from './ormconfig';
 
 export const dbCreateConnection = async (): Promise<Connection | null> => {
     try {

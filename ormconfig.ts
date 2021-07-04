@@ -1,6 +1,6 @@
 import { ConnectionOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import config from '../../config/config';
+import config from './src/config/config';
 
 const ormConfig: ConnectionOptions = {
     type: 'postgres',
@@ -9,15 +9,15 @@ const ormConfig: ConnectionOptions = {
     username: config.postgreSql.user,
     password: config.postgreSql.pass,
     database: config.postgreSql.database,
-    synchronize: false,
+    synchronize: true,
     logging: process.env['TYPEORM_LOGGING'] == 'true',
     migrationsRun: process.env['MIGRATIONS_RUN'] == 'true',
     cli: {
-        migrationsDir: 'src/db/migration',
-        entitiesDir: 'src/entity'
+        migrationsDir: './migration',
+        entitiesDir: './entity'
     },
-    entities: ['src/typeorm/entities/**/*.ts'],
-    migrations: ['src/typeorm/migrations/**/*.ts'],
+    entities: ['./entity/*.ts'],
+    migrations: ['./migration/*.ts'],
     namingStrategy: new SnakeNamingStrategy()
 };
 

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import logging from '../config/logging';
 import { getConnection, InsertResult } from 'typeorm';
-import { User } from '../database/entities/User';
+import { User } from '../../entity/User';
 
 const NAMESPACE = 'Users';
 
