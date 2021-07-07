@@ -3,7 +3,10 @@ import logging from './src/config/logging';
 import config from './src/config/config';
 import userRoutes from './src/routes/user';
 import loginRoutes from './src/routes/login';
+import burgerIngredientRoutes from './src/routes/burger-ingredient';
+
 import { dbCreateConnection } from './createConnection';
+import cors from 'cors';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -21,6 +24,7 @@ declare global {
     }
 }
 
+app.use(cors());
 app.use((req, res, next) => {
     logging.info(NAMESPACE, `METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
 
@@ -49,6 +53,7 @@ app.use((req, res, next) => {
 /** Routes */
 app.use(userRoutes);
 app.use(loginRoutes);
+app.use(burgerIngredientRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {

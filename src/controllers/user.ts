@@ -46,9 +46,9 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
     logging.info(NAMESPACE, 'Inserindo usuário');
-    const { name, username, email, password, cpf, role } = req.body;
+    const { name, username, email, password, cpf } = req.body;
     try {
-        const user: Users = new Users({ name, username, email, password, cpf, role });
+        const user: Users = new Users({ name, username, email, password, cpf });
         user.hashPassword();
         const result = await getConnection().createQueryBuilder().insert().into(Users).values(user).returning(['name']).execute();
 
@@ -72,7 +72,7 @@ const updateById = async (req: Request, res: Response, next: NextFunction) => {
     const { id, name, username, email, password, cpf } = req.body;
     try {
         const user: Partial<Users> = {
-            id,
+            id: Number(id),
             name,
             username,
             email,
