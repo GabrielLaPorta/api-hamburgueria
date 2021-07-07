@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BaseEntity } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BaseEntity, OneToMany } from 'typeorm';
+import { BurgerPieces } from '../burger-pieces';
+import { CurrencyColumn } from '../types';
 
 export enum IngredientTypes {
     bread = 'bread',
@@ -18,7 +20,7 @@ export class BurgerIngredient extends BaseEntity {
     })
     name: string;
 
-    @Column()
+    @CurrencyColumn()
     value: number;
 
     @Column({ type: 'enum', enum: IngredientTypes, nullable: false })
@@ -35,6 +37,9 @@ export class BurgerIngredient extends BaseEntity {
     @Column()
     @DeleteDateColumn()
     deleted_at: Date;
+
+    @OneToMany(() => BurgerPieces, (pieces: BurgerPieces) => pieces.ingredient, { onDelete: 'CASCADE' })
+    pieces: BurgerPieces[];
 
     constructor(init?: Partial<BurgerIngredient>) {
         super();

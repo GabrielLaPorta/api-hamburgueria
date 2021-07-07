@@ -3,7 +3,7 @@ import logging from '../config/logging';
 import { getConnection, InsertResult } from 'typeorm';
 import { BurgerIngredient } from '../../entity/burger-ingredient/index';
 
-const NAMESPACE = 'Burger';
+const NAMESPACE = 'Burger Ingredient';
 
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
     logging.info(NAMESPACE, 'Buscando todos ingredientes.');
@@ -29,7 +29,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     logging.info(NAMESPACE, 'Inserindo ingrediente');
     const { name, value, type } = req.body;
     try {
-        const ingredient: BurgerIngredient = new BurgerIngredient({ name, value, type });
+        const ingredient: BurgerIngredient = new BurgerIngredient({ name, value: Number(value), type });
         const result = await getConnection().createQueryBuilder().insert().into(BurgerIngredient).values(ingredient).returning(['name']).execute();
 
         logging.info(NAMESPACE, 'ingrediente criado: ', result);

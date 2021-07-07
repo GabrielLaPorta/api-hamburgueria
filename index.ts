@@ -3,6 +3,7 @@ import logging from './src/config/logging';
 import config from './src/config/config';
 import userRoutes from './src/routes/user';
 import loginRoutes from './src/routes/login';
+import burgerRoutes from './src/routes/burger';
 import burgerIngredientRoutes from './src/routes/burger-ingredient';
 
 import { dbCreateConnection } from './createConnection';
@@ -53,6 +54,7 @@ app.use((req, res, next) => {
 /** Routes */
 app.use(userRoutes);
 app.use(loginRoutes);
+app.use(burgerRoutes);
 app.use(burgerIngredientRoutes);
 
 /** Error handling */

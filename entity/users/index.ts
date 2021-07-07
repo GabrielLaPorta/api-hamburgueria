@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BaseEntity } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BaseEntity, OneToMany } from 'typeorm';
 
 import { Role } from '../types';
+import { Burger } from '../burger';
 
 @Entity()
 export class Users extends BaseEntity {
@@ -33,6 +34,9 @@ export class Users extends BaseEntity {
         length: 30
     })
     role: string;
+
+    @OneToMany(() => Burger, (burger: Burger) => burger.user, { onDelete: 'CASCADE' })
+    burgers: Burger[];
 
     @Column()
     @CreateDateColumn()
