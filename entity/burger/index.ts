@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BaseEntity, OneToMany, ManyToOne, RelationId } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BaseEntity, OneToMany, ManyToOne, RelationId, JoinColumn } from 'typeorm';
 import { BurgerPieces } from '../burger-pieces';
 import { CurrencyColumn } from '../types';
 import { Users } from '../users';
@@ -28,11 +28,9 @@ export class Burger extends BaseEntity {
     @OneToMany(() => BurgerPieces, (pieces: BurgerPieces) => pieces.burger, { onDelete: 'CASCADE' })
     pieces: BurgerPieces[];
 
-    @ManyToOne(() => Users, (user: Users) => user.burgers)
+    @ManyToOne(() => Users, { nullable: false, onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'userId' })
     user: Users;
-
-    @RelationId((burger: Burger) => burger.user)
-    userId: number;
 
     constructor(init?: Partial<Burger>) {
         super();

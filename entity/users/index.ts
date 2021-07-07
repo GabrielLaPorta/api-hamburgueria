@@ -17,7 +17,7 @@ export class Users extends BaseEntity {
     @Column()
     password: string;
 
-    @Column()
+    @Column({ nullable: true })
     cpf: string;
 
     @Column({
@@ -28,6 +28,9 @@ export class Users extends BaseEntity {
 
     @Column()
     name: string;
+
+    @Column()
+    cep: string;
 
     @Column({
         default: 'STANDARD' as Role,

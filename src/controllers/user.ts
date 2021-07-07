@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import logging from '../config/logging';
 import { getConnection, InsertResult } from 'typeorm';
 import { Users } from '../../entity/users/index';
+import CepValidator from '../validator/cep';
 
 const NAMESPACE = 'Users';
 
@@ -46,17 +47,24 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
     logging.info(NAMESPACE, 'Inserindo usuário');
-    const { name, username, email, password, cpf } = req.body;
+    const { name, username, email, password, cep } = req.body;
     try {
-        const user: Users = new Users({ name, username, email, password, cpf });
+        const user: Users = new Users({ name, username, email, password, cep });
         user.hashPassword();
-        const result = await getConnection().createQueryBuilder().insert().into(Users).values(user).returning(['name']).execute();
 
-        logging.info(NAMESPACE, 'Usuário criado: ', result);
+        if (await CepValidator(cep)) {
+            const result = await getConnection().createQueryBuilder().insert().into(Users).values(user).returning(['name']).execute();
 
-        return res.status(200).json({
-            result
-        });
+            logging.info(NAMESPACE, 'Usuário criado: ', result);
+
+            return res.status(200).json({
+                result
+            });
+        } else {
+            return res.status(200).json({
+                message: 'Cep inválido'
+            });
+        }
     } catch (error) {
         logging.error(NAMESPACE, error.message, error);
 

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BaseEntity, ManyToOne, ManyToMany, RelationId } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BaseEntity, ManyToOne, ManyToMany, RelationId, JoinColumn } from 'typeorm';
 import { Burger } from '../burger';
 import { BurgerIngredient } from '../burger-ingredient';
 import { CurrencyColumn } from '../types';
@@ -8,13 +8,14 @@ export class BurgerPieces extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Burger, (burger: Burger) => burger.pieces)
+    @ManyToOne(() => Burger, (burger: Burger) => burger.pieces, { onDelete: 'CASCADE' })
     burger: Burger;
 
     @RelationId((pieces: BurgerPieces) => pieces.burger)
     burgerId: number;
 
-    @ManyToOne(() => BurgerIngredient)
+    @ManyToOne(() => BurgerIngredient, { nullable: false })
+    @JoinColumn({ name: 'ingredientId' })
     ingredient: BurgerIngredient;
 
     @RelationId((pieces: BurgerPieces) => pieces.ingredient)

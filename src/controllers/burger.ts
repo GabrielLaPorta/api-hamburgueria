@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import logging from '../config/logging';
-import { getConnection, InsertResult } from 'typeorm';
+import { BaseEntity, getConnection, InsertResult } from 'typeorm';
 import { BurgerIngredient } from '../../entity/burger-ingredient/index';
 import { Burger } from '../../entity/burger';
 import { BurgerPieces } from '../../entity/burger-pieces';
@@ -19,7 +19,7 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
                         id: req.user.userId
                     }
                 },
-                relations: ['user', 'pieces']
+                relations: ['user', 'pieces', 'pieces.ingredient']
             });
 
         logging.info(NAMESPACE, 'Retornando burgers do usuário: ', results);
@@ -41,18 +41,22 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     logging.info(NAMESPACE, 'Inserindo burger');
     const { name, value, ingredients } = req.body;
     try {
-        const burger: Burger = await new Burger({ name, value, userId: Number(req.user.userId) }).save();
+        const user = await Users.findOne({ where: { id: Number(req.user.userId) } });
+        let burger: Burger = new Burger({
+            name,
+            value
+        });
+        burger.user = new Users(user);
+        burger = await getConnection().getRepository(Burger).save(burger);
 
-        const pieces: BurgerPieces[] = ingredients.forEach(
-            async (ingredient: BurgerIngredient) =>
-                await new BurgerPieces({
-                    ingredientId: ingredient.id,
-                    burgerId: burger.id,
-                    value: ingredient.value
-                }).save()
-        );
-
-        await getConnection().createQueryBuilder().insert().into(BurgerPieces).values(pieces).returning(['id']).execute();
+        for (let i = 0; i < ingredients.length; i++) {
+            const piece = new BurgerPieces();
+            let ingredient = await BurgerIngredient.findOne({ where: { id: Number(ingredients[i].id) } });
+            ingredient = new BurgerIngredient(ingredient);
+            piece.ingredient = ingredient;
+            piece.burger = burger;
+            await getConnection().getRepository(BurgerPieces).save(piece);
+        }
 
         logging.info(NAMESPACE, 'ingrediente criado: ', burger);
 
