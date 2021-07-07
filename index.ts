@@ -2,10 +2,24 @@ import express from 'express';
 import logging from './src/config/logging';
 import config from './src/config/config';
 import userRoutes from './src/routes/user';
+import loginRoutes from './src/routes/login';
 import { dbCreateConnection } from './createConnection';
 
 const NAMESPACE = 'Server';
 const app = express();
+
+declare global {
+    namespace Express {
+        interface Request {
+            user: {
+                username: string;
+                userId: string;
+                email: string;
+                role: string;
+            };
+        }
+    }
+}
 
 app.use((req, res, next) => {
     logging.info(NAMESPACE, `METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
@@ -34,6 +48,7 @@ app.use((req, res, next) => {
 
 /** Routes */
 app.use(userRoutes);
+app.use(loginRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
@@ -47,7 +62,6 @@ app.use((req, res, next) => {
 app.listen(config.server.port, () => {
     console.log(`${config.server.hostname} rodando na porta ${config.server.port}`);
 });
-
 (async () => {
     await dbCreateConnection();
 })();

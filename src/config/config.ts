@@ -18,10 +18,12 @@ const POSTGRE_SQL = {
 
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost';
 const SERVER_PORT = process.env.SERVER_PORT || 1337;
+const JWT_KEY = process.env.JWT_KEY || 'segredo';
 
 const SERVER = {
     hostname: SERVER_HOSTNAME,
-    port: SERVER_PORT
+    port: SERVER_PORT,
+    jwtKey: JWT_KEY
 };
 
 const config = {

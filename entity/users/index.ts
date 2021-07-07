@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BaseEntity } from 'typeorm';
 
-import { Role } from './types';
+import { Role } from '../types';
 
-@Entity('users')
-export class User {
+@Entity()
+export class Users extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -25,9 +25,7 @@ export class User {
     })
     username: string;
 
-    @Column({
-        nullable: true
-    })
+    @Column()
     name: string;
 
     @Column({
@@ -54,5 +52,9 @@ export class User {
 
     checkIfPasswordMatch(unencryptedPassword: string) {
         return bcrypt.compareSync(unencryptedPassword, this.password);
+    }
+    constructor(init?: Partial<Users>) {
+        super();
+        Object.assign(this, init);
     }
 }

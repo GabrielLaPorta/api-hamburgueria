@@ -16,8 +16,8 @@ const ormConfig: ConnectionOptions = {
         migrationsDir: './migration',
         entitiesDir: './entity'
     },
-    entities: ['./entity/*.ts'],
-    migrations: ['./migration/*.ts'],
+    entities: ['./entity/**/**{.ts,.js}', './bin/entity/**/**{.ts,.js}'],
+    migrations: ['./migration/*{.ts, .js}'],
     namingStrategy: new SnakeNamingStrategy()
 };
 
