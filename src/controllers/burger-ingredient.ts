@@ -8,12 +8,48 @@ const NAMESPACE = 'Burger Ingredient';
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
     logging.info(NAMESPACE, 'Buscando todos ingredientes.');
     try {
-        const results = await getConnection().getRepository(BurgerIngredient).find();
+        const results = req.query.searchTerm
+            ? await getConnection()
+                  .getRepository(BurgerIngredient)
+                  .createQueryBuilder('ing')
+                  .where('LOWER(ing.name) like LOWER(:name)', { name: `%${req.query.searchTerm}%` })
+                  .getMany()
+            : await getConnection().getRepository(BurgerIngredient).find();
 
         logging.info(NAMESPACE, 'Retornando ingredientes: ', results);
 
+        const bread: any[] = [];
+        const salad: any[] = [];
+        const beef: any[] = [];
+        const sauce: any[] = [];
+        const cheese: any[] = [];
+
+        results.map((ing) => {
+            switch (ing.type) {
+                case 'bread':
+                    bread.push(ing);
+                    break;
+                case 'salad':
+                    salad.push(ing);
+                    break;
+                case 'beef':
+                    beef.push(ing);
+                    break;
+                case 'sauce':
+                    sauce.push(ing);
+                    break;
+                case 'cheese':
+                    cheese.push(ing);
+                    break;
+            }
+        });
+
         return res.status(200).json({
-            results
+            bread,
+            salad,
+            beef,
+            sauce,
+            cheese
         });
     } catch (error) {
         logging.error(NAMESPACE, error.message, error);
